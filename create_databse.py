@@ -15,7 +15,7 @@ for db in db_files:
      dbs_time_elapsed_since_backup.append(datetime.now() - datetime.fromtimestamp(os.path.getctime(db)))
 
 backup_period = timedelta(days=30)
-if not any(time < backup_period for time in dbs_time_elapsed_since_backup):  # CURRENTLY SET TO KEEP REWRITING GIVEN RECENT DBs (remove 'not' to reset)
+if not any(time < backup_period for time in dbs_time_elapsed_since_backup):  #TODO: CURRENTLY SET TO KEEP REWRITING GIVEN RECENT DBs (remove 'not' to reset)
      print('Database recently backed up. No need to commit another version.')
      quit()
 
