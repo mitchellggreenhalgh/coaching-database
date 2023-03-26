@@ -1,5 +1,7 @@
 from tkinter import *
 from tkinter import ttk
+# https://docs.python.org/3/library/tkinter.html#handy-reference
+# https://tkdocs.com/index.html
 
 # Instantiate app
 root = Tk()
