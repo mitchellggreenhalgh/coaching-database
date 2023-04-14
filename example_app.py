@@ -2,10 +2,12 @@ from tkinter import *
 from tkinter import ttk
 # https://docs.python.org/3/library/tkinter.html#handy-reference
 # https://tkdocs.com/index.html
+# https://github.com/codefirstio/tkinter-data-entry/blob/main/sqlite-data-entry/main.py
+# https://www.educba.com/tkinter-notebook/
 
 # Instantiate app
 root = Tk()
-root.title("Data Entry Tool")
+root.title("Data Entry Tool Example")
 
 # Widget functions
 def test(*args):

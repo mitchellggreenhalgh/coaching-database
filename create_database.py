@@ -1,33 +1,16 @@
 import sqlite3  
-from datetime import date, datetime, timedelta
 import os
-from glob import glob
 # https://www.w3schools.com/sql/sql_view.asp
 
 
-# Backup the database every 30 days. Check the date of all .db files, and if there's one within the last 30 days, cancel the new database. 
-# #TODO: change it from making a brand new database to just making a copy of the last one
-# #TODO: actually, just need to make an update_database.py, and only trigger this one if a .db can't be found
-db_files = glob('*.db')
-
-dbs_time_elapsed_since_backup = []
-for db in db_files:
-     dbs_time_elapsed_since_backup.append(datetime.now() - datetime.fromtimestamp(os.path.getctime(db)))
-
-backup_period = timedelta(days=30)
-if not any(time < backup_period for time in dbs_time_elapsed_since_backup):  #TODO: CURRENTLY SET TO KEEP REWRITING GIVEN RECENT DBs (remove 'not' to reset)
-     print('Database recently backed up. No need to commit another version.')
-     quit()
-
-
 # Create Database
-db_name = "runningDB_" + str(date.today()) + '.db'
+db_name = 'runningDB_master.db'
 running_db = sqlite3.connect(db_name)
 connection = running_db.cursor()
 
 
 # Setup DB structure
-# TODO Other Tables: Records, Race splits/details, Meet information (weather, etc.), mileage and other individual based metrics (like intensity and stuff), data for other analyses (400/800 split ratio analyses)
+# TODO Other Tables: Records (view of all races), race splits/details, Meet information (weather, etc.), mileage and other individual based metrics (like intensity and stuff)
 
 connection.execute('''
                    CREATE TABLE IF NOT EXISTS athletes (
@@ -47,12 +30,36 @@ connection.execute('''
                     distance_m INTEGER,
                     time TIME,
                     PRIMARY KEY (athlete, date, distance_m)
-                   )
+                    )
+                   ''')
+
+connection.execute('''
+                   CREATE TABLE IF NOT EXISTS db800 (
+                    athlete TEXT,
+                    first_200 DOUBLE,
+                    second_200 DOUBLE,
+                    third_200 DOUBLE,
+                    fourth_200 DOUBLE,
+                    first_400 DOUBLE,
+                    second_400 DOUBLE,
+                    time_200s AS (first_200 + second_200 + third_200 + fourth_200),
+                    time_400s AS (first_400 + second_400),
+                    PRIMARY KEY (athlete, first_200, second_200, third_200, fourth_200, first_400, second_400)
+                    )
+                   ''')
+
+connection.execute('''
+                   CREATE TABLE IF NOT EXISTS db400 (
+                    athlete TEXT,
+                    first_200 DOUBLE,
+                    second_200 DOUBLE,
+                    time_sec AS (first_200 + second_200),
+                    PRIMARY KEY (athlete, first_200, second_200)
+                    )
                    ''')
 
 
 # Commit Database
-# This part is a bit redundant, need to merge with the #TODO on ln 9, but keeping it in for developing the database
 try:
     # Check if a database of the same name exists
     if db_name not in os.listdir(path = os.getcwd()):
