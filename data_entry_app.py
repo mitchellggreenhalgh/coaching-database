@@ -357,6 +357,8 @@ for child in db_400_frame.winfo_children():
 
 #endregion
 
+#TODO: Meet info entry
+
 nb.add(athlete_frame, text = 'Athlete Info')
 nb.add(splits_frame, text = 'Race Splits')
 nb.add(laps_frame, text = 'Lap Splits')
