@@ -14,7 +14,6 @@ connection = running_db.cursor()
 # race splits/details (table) --> TODO AXING THAT, gonna just convert the input from that into laps upon submitting data for insert,
 # race laps/details (table) 
 # relay table (overall time, participants, date)
-# view combining splits/laps
 # Meet information (weather, date, name, locationetc.), mileage and other individual based metrics (like intensity and stuff)
 
 connection.execute('''
@@ -22,22 +21,10 @@ connection.execute('''
                     athlete TEXT,
                     school_year_beginning YEAR,
                     grade INTEGER,
+                    sex TEXT,
                     PRIMARY KEY (athlete)
                    )
                    ''')
-
-# This will become a view combining the laps and splits tables
-# connection.execute('''
-#                    CREATE TABLE IF NOT EXISTS races (
-#                     athlete TEXT,
-#                     date DATE,
-#                     event_location TEXT,
-#                     event_name TEXT,
-#                     distance_m INTEGER,
-#                     time TIME,
-#                     PRIMARY KEY (athlete, date, distance_m)
-#                     )
-#                    ''')
 
 connection.execute('''
                    CREATE TABLE IF NOT EXISTS db800 (
@@ -64,31 +51,13 @@ connection.execute('''
                     )
                    ''')
 
-# TODO: Update for math for splits/total time?, set primary key
+
 connection.execute('''
-                    CREATE TABLE IF NOT EXISTS race_splits (
+                    CREATE TABLE IF NOT EXISTS race_laps (
                         athlete TEXT,
                         event_distance_m INTEGER,
                         date DATE,
                         meet_name TEXT,
-                        relay_y_n INTEGER,
-                        split_1 TEXT,
-                        split_2 TEXT,
-                        split_3 TEXT,
-                        split_4 TEXT,
-                        split_5 TEXT,
-                        split_6 TEXT,
-                        split_7 TEXT,
-                        split_8 TEXT
-                    )
-                   ''')
-
-connection.execute('''
-                    CREATE TABLE IF NOT EXISTS lap_splits (
-                        athlete TEXT,
-                        event_distance_m INTEGER,
-                        date DATE,
-                        event_name TEXT,
                         relay_y_n INTEGER,
                         lap_1 TEXT,
                         lap_2 TEXT,
@@ -97,10 +66,27 @@ connection.execute('''
                         lap_5 TEXT,
                         lap_6 TEXT,
                         lap_7 TEXT,
-                        lap_8 TEXT
+                        lap_8 TEXT,
+                        total_time TEXT,
+                        PRIMARY KEY (athlete, event_distance_m, date, meet_name, total_time)
                     )
                    ''')
 
+connection.execute('''
+                    CREATE TABLE IF NOT EXISTS meet_information (
+                        name TEXT,
+                        date DATE,
+                        host_school TEXT,
+                        physical_location TEXT,
+                        city_state TEXT,
+                        weather_temperature_deg_F INTEGER,
+                        weather_clouds TEXT,
+                        weather_precipitation TEXT,
+                        weather_notes TEXT
+                   )
+                   ''')
+
+#TODO: RELAY TABLE
 
 # Commit Database
 try:

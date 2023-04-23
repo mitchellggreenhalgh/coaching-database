@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import ttk
-from widget_formats import universal_format as uf
+from widget_formats import universal_format as formats
 import sqlite3
 from backup_database import db_backupper as dbb
 
@@ -54,40 +54,40 @@ class frame_800:
         running_db.close()
     
     
-    db_800_frame = ttk.Frame(self.notebook, padding = uf.frame_padding)
-    db_800_frame.grid(column = 0, row = 0, sticky = uf.frame_sticky)
+    db_800_frame = ttk.Frame(self.notebook, padding = formats.frame_padding)
+    db_800_frame.grid(column = 0, row = 0, sticky = formats.frame_sticky)
 
-    ttk.Label(db_800_frame, text = 'Athlete (first last)').grid(column = 0, row = 0, sticky = uf.label_sticky)
+    ttk.Label(db_800_frame, text = 'Athlete (first last)').grid(column = 0, row = 0, sticky = formats.label_sticky)
     athlete_800 = StringVar()
-    athlete_800_entry = ttk.Entry(db_800_frame, width = 10, textvariable = athlete_800).grid(column = 0, row = 1, sticky = uf.entry_sticky)
+    athlete_800_entry = ttk.Entry(db_800_frame, width = 10, textvariable = athlete_800).grid(column = 0, row = 1, sticky = formats.entry_sticky)
 
-    ttk.Label(db_800_frame, text = '200 #1 (#.##)').grid(column = 1, row = 0, sticky = uf.label_sticky)
+    ttk.Label(db_800_frame, text = '200 #1 (#.##)').grid(column = 1, row = 0, sticky = formats.label_sticky)
     first_200 = DoubleVar()
-    first_200_entry = ttk.Entry(db_800_frame, width = 10, textvariable = first_200).grid(column = 1, row = 1, sticky = uf.entry_sticky)
+    first_200_entry = ttk.Entry(db_800_frame, width = 10, textvariable = first_200).grid(column = 1, row = 1, sticky = formats.entry_sticky)
 
-    ttk.Label(db_800_frame, text = '200 #2 (#.##)').grid(column = 2, row = 0, sticky = uf.label_sticky)
+    ttk.Label(db_800_frame, text = '200 #2 (#.##)').grid(column = 2, row = 0, sticky = formats.label_sticky)
     second_200 = DoubleVar()
-    second_200_entry = ttk.Entry(db_800_frame, width = 10, textvariable = second_200).grid(column = 2, row = 1, sticky = uf.entry_sticky)
+    second_200_entry = ttk.Entry(db_800_frame, width = 10, textvariable = second_200).grid(column = 2, row = 1, sticky = formats.entry_sticky)
 
-    ttk.Label(db_800_frame, text = '200 #3 (#.##)').grid(column = 3, row = 0, sticky = uf.label_sticky)
+    ttk.Label(db_800_frame, text = '200 #3 (#.##)').grid(column = 3, row = 0, sticky = formats.label_sticky)
     third_200 = DoubleVar()
-    third_200_entry = ttk.Entry(db_800_frame, width = 10, textvariable = third_200).grid(column = 3, row = 1, sticky = uf.entry_sticky)
+    third_200_entry = ttk.Entry(db_800_frame, width = 10, textvariable = third_200).grid(column = 3, row = 1, sticky = formats.entry_sticky)
 
-    ttk.Label(db_800_frame, text = '200 #4 (#.##)').grid(column = 4, row = 0, sticky = uf.label_sticky)
+    ttk.Label(db_800_frame, text = '200 #4 (#.##)').grid(column = 4, row = 0, sticky = formats.label_sticky)
     fourth_200 = DoubleVar()
-    fourth_200_entry = ttk.Entry(db_800_frame, width = 10, textvariable = fourth_200).grid(column = 4, row = 1, sticky = uf.entry_sticky)
+    fourth_200_entry = ttk.Entry(db_800_frame, width = 10, textvariable = fourth_200).grid(column = 4, row = 1, sticky = formats.entry_sticky)
 
-    ttk.Label(db_800_frame, text = '400 #1 (#.##)').grid(column = 1, row = 2, sticky = uf.label_sticky)
+    ttk.Label(db_800_frame, text = '400 #1 (#.##)').grid(column = 1, row = 2, sticky = formats.label_sticky)
     first_400 = DoubleVar()
-    first_400_entry = ttk.Entry(db_800_frame, width = 10, textvariable = first_400).grid(column = 1, row = 3, sticky = uf.entry_sticky)
+    first_400_entry = ttk.Entry(db_800_frame, width = 10, textvariable = first_400).grid(column = 1, row = 3, sticky = formats.entry_sticky)
 
-    ttk.Label(db_800_frame, text = '400 #2 (#.##)').grid(column = 2, row = 2, sticky = uf.label_sticky)
+    ttk.Label(db_800_frame, text = '400 #2 (#.##)').grid(column = 2, row = 2, sticky = formats.label_sticky)
     second_400 = DoubleVar()
-    second_400_entry = ttk.Entry(db_800_frame, width = 10, textvariable = second_400).grid(column = 2, row = 3, sticky = uf.entry_sticky)
+    second_400_entry = ttk.Entry(db_800_frame, width = 10, textvariable = second_400).grid(column = 2, row = 3, sticky = formats.entry_sticky)
 
     entry_confirmation = StringVar()
-    ttk.Label(db_800_frame, textvariable = entry_confirmation).grid(column = 0, row = 6, sticky = uf.label_sticky)
-    ttk.Button(db_800_frame, text = 'Submit', command = confirm_entries).grid(column = 3, row = 6, sticky = uf.button_sticky)
+    ttk.Label(db_800_frame, textvariable = entry_confirmation).grid(column = 0, row = 6, sticky = formats.label_sticky)
+    ttk.Button(db_800_frame, text = 'Submit', command = confirm_entries).grid(column = 3, row = 6, sticky = formats.button_sticky)
 
     for child in db_800_frame.winfo_children():
         child.grid_configure(padx = 5, pady = 5)
