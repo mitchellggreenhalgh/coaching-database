@@ -16,6 +16,7 @@ connection = running_db.cursor()
 # relay table (overall time, participants, date)
 # Meet information (weather, date, name, locationetc.), mileage and other individual based metrics (like intensity and stuff)
 
+#TODO: change school_year_beginning to a season(xc/tf) and year var instead of school year var
 connection.execute('''
                    CREATE TABLE IF NOT EXISTS athletes (
                     athlete TEXT,

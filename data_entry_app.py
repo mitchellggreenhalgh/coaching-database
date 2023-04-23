@@ -13,7 +13,7 @@ root.title('Data Entry Tool')
 
 # Instantiate notebook
 nb = ttk.Notebook(root)
-nb.pack(fill='both', expand = 1)  # Puts the notebook widget into the root
+nb.pack(fill='both', expand = 1)
 
 # Database Connection
 db_name = db_backupper().db_name
@@ -53,13 +53,14 @@ def enter_data_athlete():
     INSERT INTO athletes (
         athlete, 
         school_year_beginning, 
-        grade
-    ) VALUES (?, ?, ?)
+        grade,
+        sex
+    ) VALUES (?, ?, ?, ?)
     '''
 
     insert_data = (athlete_name.get().lower(), 
                    athlete_school_year.get(), 
-                   athlete_grade.get())
+                   athlete_grade.get(), athlete_sex.get())
     
     running_db = sqlite3.connect(db_name)
     cursor = running_db.cursor()
@@ -79,9 +80,13 @@ ttk.Label(athlete_frame, text = 'Grade [#, 9-12]').grid(column = 2, row = 0, sti
 athlete_grade = IntVar()
 athlete_grade_entry = ttk.Entry(athlete_frame, width = 10, textvariable = athlete_grade).grid(column = 2, row = 1, sticky = formats.entry_sticky)
 
+ttk.Label(athlete_frame, text = 'Sex [m/f]').grid(column = 3, row = 0, sticky = formats.label_sticky)
+athlete_sex = StringVar()
+athlete_sex_entry = ttk.Entry(athlete_frame, width = 5, textvariable = athlete_sex).grid(column = 3, row = 1, sticky = formats.entry_sticky)
+
 entry_confirmation_athlete = StringVar()    
 ttk.Label(athlete_frame, textvariable = entry_confirmation_athlete).grid(column = 0, row = 2, sticky = formats.label_sticky)
-ttk.Button(athlete_frame, text = 'Submit', command = confirm_entries_athlete).grid(column = 3, row = 1, sticky = formats.button_sticky)
+ttk.Button(athlete_frame, text = 'Submit', command = confirm_entries_athlete).grid(column = 4, row = 1, sticky = formats.button_sticky)
 
 for child in athlete_frame.winfo_children():
     child.grid_configure(padx = 5, pady = 5)
