@@ -6,10 +6,11 @@ class split_converter:
 
         splits, total_time = split_converter.fix_empty_splits(splits)
         conversion = [split_converter.interpret_input(y) - split_converter.interpret_input(x) for x,y in zip(splits,splits[1:])]
-        formatted_conversion = [str(x) for x in conversion]
-        appended_conversion = [str(split_converter.interpret_input(splits[0])).split(' ')[1][1:]] + formatted_conversion
+        formatted_conversion = [str(x)[3:-4] if len(str(x)) > 7 else str(x)[3:] + '.00' for x in conversion]
+        appended_conversion = [str(split_converter.interpret_input(splits[0])).split(' ')[1][1:][3:-4]] + formatted_conversion
+        replaced_zeroes = ['' if i == '0:00.00' else i for i in appended_conversion]
 
-        return appended_conversion, total_time
+        return replaced_zeroes, total_time
 
     def interpret_input(input:str):
         ''' Convert string to useable datetime value. '''
@@ -21,7 +22,8 @@ class split_converter:
         ''' When not all 8 splits are taken (e.g. for an 800m), replace all the empty strings with useable splits that don't affect the lap calculations. Also extract the total time from the last split. '''
 
         if all(bool(i) for i in raw_input):
-            return raw_input
+            last_split = [raw_input[-1]]
+            return raw_input, last_split
         
         else:
             without_empty_strings = [i for i in raw_input if i != '']

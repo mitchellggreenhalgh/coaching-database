@@ -4,7 +4,9 @@ from tkinter import messagebox
 from widget_formats import universal_format as formats
 from backup_database import db_backupper
 from split_conversions import split_converter
-import sqlite3
+from time_math import time_addition
+from database_operations import db_ops
+# import sqlite3
 
 
 # Instantiate app
@@ -27,9 +29,9 @@ except:
     override_backup = messagebox.askyesno(title = 'Database Updater', message = 'Recent backup within last 30 days found. Backup database anyway?')
     if override_backup:
         create_backup._backup_override()
-        # TODO: app won't work if override completes?
     else:
         messagebox.showinfo(title = 'Database Updater', message = 'No backup created')
+
 
 #region <Athlete Tab>
 athlete_frame = ttk.Frame(nb, padding = formats.frame_padding)
@@ -38,8 +40,8 @@ athlete_frame.grid(column = 0, row = 0, sticky = formats.frame_sticky)
 def confirm_entries_athlete(*args):
     athlete_info = athlete_name.get().lower()    
     try:
-        if athlete_school_year.get() != 0:
-            entry_confirmation_athlete.set(f"Submitted {athlete_info}'s \ninformation to the database")
+        if athlete_season_year.get() != 0:
+            entry_confirmation_athlete.set(f"Submitted {athlete_info}'s \nmeet information to the database")
             enter_data_athlete()
         else:
             entry_confirmation_athlete.set(f"Please enter data")
@@ -52,47 +54,49 @@ def enter_data_athlete():
     insert_query = '''
     INSERT INTO athletes (
         athlete, 
-        school_year_beginning, 
+        season,
+        season_year,
         grade,
         sex
-    ) VALUES (?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?)
     '''
 
     insert_data = (athlete_name.get().lower(), 
-                   athlete_school_year.get(), 
+                   athlete_season.get(), athlete_season_year.get(),
                    athlete_grade.get(), athlete_sex.get())
     
-    running_db = sqlite3.connect(db_name)
-    cursor = running_db.cursor()
-    cursor.execute(insert_query, insert_data)
-    running_db.commit()
-    running_db.close()
+    db_ops.submit_data(db_name, insert_query, insert_data)
 
 ttk.Label(athlete_frame, text = 'Athlete [first last]').grid(column = 0, row = 0, sticky = formats.label_sticky)
 athlete_name = StringVar()
 athlete_name_entry = ttk.Entry(athlete_frame, width = 10, textvariable = athlete_name).grid(column = 0, row = 1, sticky = formats.entry_sticky)
 
-ttk.Label(athlete_frame, text = 'School Year (fall semester year) [yyyy]').grid(column = 1, row = 0, sticky = formats.label_sticky)
-athlete_school_year = IntVar()
-athlete_school_year_entry = ttk.Entry(athlete_frame, width = 10, textvariable = athlete_school_year).grid(column = 1, row = 1, sticky = formats.entry_sticky)
+ttk.Label(athlete_frame, text = 'Running Season [xc, tf_indoor, tf_outdoor]').grid(column = 1, row = 0, sticky = formats.label_sticky)
+athlete_season = StringVar()
+athlete_season_entry = ttk.Entry(athlete_frame, width = 10, textvariable = athlete_season).grid(column = 1, row = 1, sticky = formats.entry_sticky)
 
-ttk.Label(athlete_frame, text = 'Grade [#, 9-12]').grid(column = 2, row = 0, sticky = formats.label_sticky)
+ttk.Label(athlete_frame, text = 'Season Year [yyyy]').grid(column = 2, row = 0, sticky = formats.label_sticky)
+athlete_season_year = IntVar()
+athlete_season_year_entry = ttk.Entry(athlete_frame, width = 10, textvariable = athlete_season_year)\
+    .grid(column = 2, row = 1, sticky = formats.entry_sticky)
+
+ttk.Label(athlete_frame, text = 'Grade [#, 9-12]').grid(column = 3, row = 0, sticky = formats.label_sticky)
 athlete_grade = IntVar()
-athlete_grade_entry = ttk.Entry(athlete_frame, width = 10, textvariable = athlete_grade).grid(column = 2, row = 1, sticky = formats.entry_sticky)
+athlete_grade_entry = ttk.Entry(athlete_frame, width = 10, textvariable = athlete_grade).grid(column = 3, row = 1, sticky = formats.entry_sticky)
 
-ttk.Label(athlete_frame, text = 'Sex [m/f]').grid(column = 3, row = 0, sticky = formats.label_sticky)
+ttk.Label(athlete_frame, text = 'Sex [m/f]').grid(column = 4, row = 0, sticky = formats.label_sticky)
 athlete_sex = StringVar()
-athlete_sex_entry = ttk.Entry(athlete_frame, width = 5, textvariable = athlete_sex).grid(column = 3, row = 1, sticky = formats.entry_sticky)
+athlete_sex_entry = ttk.Entry(athlete_frame, width = 5, textvariable = athlete_sex).grid(column = 4, row = 1, sticky = formats.entry_sticky)
 
 entry_confirmation_athlete = StringVar()    
 ttk.Label(athlete_frame, textvariable = entry_confirmation_athlete).grid(column = 0, row = 2, sticky = formats.label_sticky)
-ttk.Button(athlete_frame, text = 'Submit', command = confirm_entries_athlete).grid(column = 4, row = 1, sticky = formats.button_sticky)
+ttk.Button(athlete_frame, text = 'Submit', command = confirm_entries_athlete).grid(column = 5, row = 1, sticky = formats.button_sticky)
 
 for child in athlete_frame.winfo_children():
     child.grid_configure(padx = 5, pady = 5)
 #endregion
 
-#region <Splits Tab>
+#region <Splits Tab> 
 splits_frame = ttk.Frame(nb, padding = formats.frame_padding)
 splits_frame.grid(column = 0, row = 0, sticky = formats.frame_sticky)
 
@@ -116,6 +120,7 @@ def enter_data_splits():
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     '''
 
+
     converted_splits, total_time = split_converter.split_to_lap([splits_split_1.get(), splits_split_2.get(),
                                                      splits_split_3.get(), splits_split_4.get(),
                                                      splits_split_5.get(), splits_split_6.get(),
@@ -123,11 +128,8 @@ def enter_data_splits():
     
     insert_data = (splits_athlete.get().lower(), splits_event.get(), splits_date.get(), splits_meet.get(), splits_relay.get()) + tuple(converted_splits) + tuple(total_time)
                    
-    running_db = sqlite3.connect(db_name)
-    cursor = running_db.cursor()
-    cursor.execute(insert_query, insert_data)
-    running_db.commit()
-    running_db.close()
+    db_ops.submit_data(db_name, insert_query, insert_data)
+
 
 ttk.Label(splits_frame, text = 'Athlete [first last]').grid(column = 0, row = 0, sticky = formats.label_sticky)
 splits_athlete = StringVar()
@@ -183,16 +185,54 @@ for child in splits_frame.winfo_children():
     child.grid_configure(padx = 5, pady = 5)
 #endregion
 
-#region <Laps Tab>  #TODO: functionality
+#region <Laps Tab> 
 laps_frame = ttk.Frame(nb, padding = formats.frame_padding)
 laps_frame.grid(column = 0, row = 0, sticky = formats.frame_sticky)
 
 def confirm_entries_laps(*args):
-    raise NotImplementedError
+    athlete_info = laps_athlete.get()
+    distance = laps_event.get()
+    
+    try:
+        entry_confirmation_laps.set(f"Submitted {athlete_info}'s {distance}m laps to the database.")
+        enter_data_laps()
+        
+    except ValueError:
+        pass
 
-def enter_data_laps(_distance):
-    # race_distance_m.get(): make dictionary of key:distance, value:entry fxn specific for that distance (do the math before entering it into a database?)
-    raise NotImplementedError
+def enter_data_laps():
+    insert_query = '''
+        INSERT INTO race_laps (
+            athlete,
+            event_distance_m,
+            date,
+            meet_name,
+            relay_y_n,
+            lap_1,
+            lap_2,
+            lap_3,
+            lap_4,
+            lap_5,
+            lap_6,
+            lap_7,
+            lap_8,
+            total_time
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        '''
+    
+    laps = [laps_lap_1.get(), laps_lap_2.get(), laps_lap_3.get(), laps_lap_4.get(), 
+            laps_lap_5.get(), laps_lap_6.get(), laps_lap_7.get(), laps_lap_8.get()]
+    
+    total_time = time_addition.add_time([i for i in laps if i])
+
+    insert_data = (laps_athlete.get(), laps_event.get(), laps_date.get(), laps_meet.get(), laps_relay.get(),
+                   laps_lap_1.get(), laps_lap_2.get(), laps_lap_3.get(), laps_lap_4.get(), 
+                   laps_lap_5.get(), laps_lap_6.get(), laps_lap_7.get(), laps_lap_8.get(), 
+                   total_time)
+    # insert_data = (laps_athlete.get(), laps_event.get(), laps_date.get(), laps_meet.get(), laps_relay.get()) + tuple(laps) + (total_time)
+
+
+    db_ops.submit_data(db_name, insert_query, insert_data)
 
 ttk.Label(laps_frame, text = 'Athlete [first last]').grid(column = 0, row = 0, sticky = formats.label_sticky)
 laps_athlete = StringVar()
@@ -288,11 +328,7 @@ def enter_data_800():
                    first_200.get(), second_200.get(), third_200.get(), fourth_200.get(),
                    first_400.get(), second_400.get())
     
-    running_db = sqlite3.connect(db_name)
-    cursor = running_db.cursor()
-    cursor.execute(insert_query, insert_data)
-    running_db.commit()
-    running_db.close()
+    db_ops.submit_data(db_name, insert_query, insert_data)
     
 
 ttk.Label(db_800_frame, text = 'Athlete [first last]').grid(column = 0, row = 0, sticky = formats.label_sticky)
@@ -363,11 +399,7 @@ def enter_data_400():
     insert_data = (athlete_400.get().lower(), 
                    first_200_400.get(), second_200_400.get())
     
-    running_db = sqlite3.connect(db_name)
-    cursor = running_db.cursor()
-    cursor.execute(insert_query, insert_data)
-    running_db.commit()
-    running_db.close()
+    db_ops.submit_data(db_name, insert_query, insert_data)
     
 
 ttk.Label(db_400_frame, text = 'Athlete [first last]').grid(column = 0, row = 0, sticky = formats.label_sticky)
@@ -390,15 +422,42 @@ for child in db_400_frame.winfo_children():
     child.grid_configure(padx = 5, pady = 5)
 #endregion
 
-#region <Meet Info tab>  # TODO: functionality
+#region <Meet Info tab>
 meet_frame = ttk.Frame(nb, padding = formats.frame_padding)
 meet_frame.grid(column=0, row = 0, sticky = formats.frame_sticky)
 
 def confirm_entries_meet():
-    raise NotImplementedError
+    athlete_info = meet_name.get().lower()    
+    try:
+        if meet_date.get():
+            entry_confirmation_meet.set(f"Submitted {athlete_info}'s \ninformation to the database")
+            enter_data_meet()
+        else:
+            entry_confirmation_meet.set(f"Please enter data")
+            raise Exception
+                
+    except ValueError:
+        pass
 
 def enter_data_meet():
-    raise NotImplementedError
+    insert_query = '''
+        INSERT INTO meet_information (
+            name, 
+            date,
+            host_school,
+            physical_location,
+            city_state,
+            weather_temperature_deg_F,
+            weather_clouds,
+            weather_precipitation,
+            weather_notes
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    '''
+
+    insert_data = (meet_name.get().lower(), meet_date.get(), meet_host.get(), meet_location.get(), meet_city_state.get(), 
+                   meet_temp.get(), meet_clouds.get(), meet_precipitation.get(), meet_weather.get())
+    
+    db_ops.submit_data(db_name, insert_query, insert_data)
 
 ttk.Label(meet_frame, text = 'Meet Name [aaa bbb]').grid(column = 0, row = 0, sticky = formats.label_sticky)
 meet_name = StringVar()
@@ -416,7 +475,7 @@ ttk.Label(meet_frame, text = 'Location [sokol park]').grid(column = 3, row = 0, 
 meet_location = StringVar()
 meet_location_entry = ttk.Entry(meet_frame, width = 10, textvariable = meet_location).grid(column = 3, row = 1, sticky = formats.entry_sticky)
 
-ttk.Label(meet_frame, text = 'City, State [Tuscaloosa, AL]').grid(column = 4, row = 0, sticky = formats.label_sticky)
+ttk.Label(meet_frame, text = 'City, State [tuscaloosa, al]').grid(column = 4, row = 0, sticky = formats.label_sticky)
 meet_city_state = StringVar()
 meet_city_state_entry = ttk.Entry(meet_frame, width = 15, textvariable = meet_city_state).grid(column = 4, row = 1, sticky = formats.entry_sticky)
 
@@ -444,14 +503,90 @@ for child in meet_frame.winfo_children():
     child.grid_configure(padx = 5, pady = 3)
 #endregion
 
+#region <Relay Entry>
+relay_frame = ttk.Frame(nb, padding = formats.frame_padding)
+relay_frame.grid(column = 0, row = 0, sticky = formats.frame_sticky)
+
+def confirm_entries_relay():
+    event_info = relay_event.get()
+    event_date = relay_date.get()
+    
+    try:
+        entry_confirmation_relay.set(f"Submitted the {event_info} from {event_date} to the database.")
+        enter_data_relay()
+        
+    except ValueError:
+        pass
+
+
+def enter_data_relay():
+    insert_query = '''
+        INSERT INTO relays (
+            meet_name,
+            date,
+            event,
+            sex,
+            leg_1,
+            leg_2,
+            leg_3,
+            leg_4,
+            time
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'''
+    
+    insert_data = (relay_meet.get(), relay_date.get(), relay_event.get(), relay_sex.get(),
+                   relay_leg_1.get(), relay_leg_2.get(), relay_leg_3.get(), relay_leg_4.get(),
+                   relay_time.get())
+    
+    db_ops.submit_data(db_name, insert_query, insert_data)
+
+
+ttk.Label(relay_frame, text = 'Meet Name [aaa bbb]').grid(column = 0, row = 0, sticky = formats.label_sticky)
+ttk.Label(relay_frame, text = 'Date [yyyy-mm-dd]').grid(column = 1, row = 0, sticky = formats.label_sticky)
+ttk.Label(relay_frame, text = 'Relay Event [4x800, dmr, ...]').grid(column = 2, row = 0, sticky = formats.label_sticky)
+ttk.Label(relay_frame, text = 'Time [m:ss.dd]').grid(column = 3, row = 0, sticky = formats.label_sticky)
+ttk.Label(relay_frame, text = 'Sex [m/f]').grid(column = 4, row = 0, sticky = formats.label_sticky)
+relay_meet = StringVar()
+relay_date = StringVar()
+relay_event = StringVar()
+relay_time = StringVar()
+relay_sex = StringVar()
+relay_meet_entry = ttk.Entry(relay_frame, textvariable = relay_meet).grid(column = 0, row = 1, sticky = formats.entry_sticky)
+relay_date_entry = ttk.Entry(relay_frame, textvariable = relay_date).grid(column = 1, row = 1, sticky = formats.entry_sticky)
+relay_event_entry = ttk.Entry(relay_frame, textvariable = relay_event).grid(column = 2, row = 1, sticky = formats.entry_sticky)
+relay_time_entry = ttk.Entry(relay_frame, textvariable = relay_time).grid(column = 3, row = 1, sticky = formats.entry_sticky)
+relay_sex_entry = ttk.Entry(relay_frame, textvariable = relay_sex).grid(column = 4, row = 1, sticky = formats.entry_sticky)
+
+ttk.Label(relay_frame, text = 'Leg 1 [first last]').grid(column = 0, row = 2, sticky = formats.label_sticky)
+ttk.Label(relay_frame, text = 'Leg 2 [first last]').grid(column = 1, row = 2, sticky = formats.label_sticky)
+ttk.Label(relay_frame, text = 'Leg 3 [first last]').grid(column = 2, row = 2, sticky = formats.label_sticky)
+ttk.Label(relay_frame, text = 'Leg 4 [first last]').grid(column = 3, row = 2, sticky = formats.label_sticky)
+relay_leg_1 = StringVar()
+relay_leg_2 = StringVar()
+relay_leg_3 = StringVar()
+relay_leg_4 = StringVar()
+relay_leg_1_entry = ttk.Entry(relay_frame, textvariable = relay_leg_1).grid(column = 0, row = 3, sticky = formats.entry_sticky)
+relay_leg_2_entry = ttk.Entry(relay_frame, textvariable = relay_leg_2).grid(column = 1, row = 3, sticky = formats.entry_sticky)
+relay_leg_3_entry = ttk.Entry(relay_frame, textvariable = relay_leg_3).grid(column = 2, row = 3, sticky = formats.entry_sticky)
+relay_leg_4_entry = ttk.Entry(relay_frame, textvariable = relay_leg_4).grid(column = 3, row = 3, sticky = formats.entry_sticky)
+
+entry_confirmation_relay = StringVar()
+ttk.Label(relay_frame, textvariable = entry_confirmation_relay).grid(column = 4, row = 2, sticky = formats.label_sticky)
+ttk.Button(relay_frame, text = 'Submit', command = confirm_entries_relay).grid(column = 4, row = 3, sticky = formats.button_sticky)
+
+
+for child in relay_frame.winfo_children():
+    child.grid_configure(padx = 3, pady = 5)
+#endregion
+
 # Add frames to notebook
 nb.add(athlete_frame, text = 'Athlete Info')
 nb.add(meet_frame, text = 'Meet Info')
 nb.add(splits_frame, text = 'Race Splits')
 nb.add(laps_frame, text = 'Lap Splits')
-nb.add(db_800_frame, text = '800m Database')
-nb.add(db_400_frame, text = '400m Database')
+nb.add(relay_frame, text = 'Relay Entry')
+nb.add(db_800_frame, text = '800m Database', state = 'hidden')
+nb.add(db_400_frame, text = '400m Database', state = 'hidden')
 
-nb.select(meet_frame)  
+nb.select(relay_frame)
 
 root.mainloop()

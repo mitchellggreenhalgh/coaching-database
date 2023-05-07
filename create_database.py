@@ -20,10 +20,11 @@ connection = running_db.cursor()
 connection.execute('''
                    CREATE TABLE IF NOT EXISTS athletes (
                     athlete TEXT,
-                    school_year_beginning YEAR,
+                    season TEXT,
+                    season_year YEAR,
                     grade INTEGER,
                     sex TEXT,
-                    PRIMARY KEY (athlete)
+                    PRIMARY KEY (athlete, season, season_year)
                    )
                    ''')
 
@@ -83,11 +84,27 @@ connection.execute('''
                         weather_temperature_deg_F INTEGER,
                         weather_clouds TEXT,
                         weather_precipitation TEXT,
-                        weather_notes TEXT
+                        weather_notes TEXT,
+                        PRIMARY KEY(name, date)
                    )
                    ''')
 
-#TODO: RELAY TABLE
+connection.execute('''
+                    CREATE TABLE IF NOT EXISTS relays (
+                        meet_name TEXT,
+                        date DATE,
+                        event TEXT,
+                        sex TEXT,
+                        leg_1 TEXT,
+                        leg_2 TEXT,
+                        leg_3 TEXT,
+                        leg_4 TEXT,
+                        time TIME,
+                        PRIMARY KEY (meet_name, date, event)
+                    )
+                    ''')
+
+#TODO: add relative humidity to meet info? meh, dont really feel like looking up all the info retroactively
 
 # Commit Database
 try:
