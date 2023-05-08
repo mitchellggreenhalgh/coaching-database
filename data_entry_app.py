@@ -11,7 +11,7 @@ from database_operations import db_ops
 
 # Instantiate app
 root = Tk()
-root.title('Data Entry Tool')
+root.title('Data Entry Tool: Race Results')
 
 # Instantiate notebook
 nb = ttk.Notebook(root)
@@ -24,24 +24,26 @@ db_name = db_backupper().db_name
 create_backup = db_backupper()
 try: 
     create_backup._backup()
+    messagebox.showinfo(title = 'Database Updater', message = 'Backup created.')
 
 except:
     override_backup = messagebox.askyesno(title = 'Database Updater', message = 'Recent backup within last 30 days found. Backup database anyway?')
     if override_backup:
         create_backup._backup_override()
     else:
-        messagebox.showinfo(title = 'Database Updater', message = 'No backup created')
+        messagebox.showinfo(title = 'Database Updater', message = 'No backup created.')
 
+# TODO: drop down for meet names in database_operations?
 
 #region <Athlete Tab>
 athlete_frame = ttk.Frame(nb, padding = formats.frame_padding)
 athlete_frame.grid(column = 0, row = 0, sticky = formats.frame_sticky)
 
 def confirm_entries_athlete(*args):
-    athlete_info = athlete_name.get().lower()    
+    athlete_info = athlete_name.get()  
     try:
         if athlete_season_year.get() != 0:
-            entry_confirmation_athlete.set(f"Submitted {athlete_info}'s \nmeet information to the database")
+            entry_confirmation_athlete.set(f"Submitted {athlete_info}'s \ninformation to the database")
             enter_data_athlete()
         else:
             entry_confirmation_athlete.set(f"Please enter data")
@@ -422,15 +424,15 @@ for child in db_400_frame.winfo_children():
     child.grid_configure(padx = 5, pady = 5)
 #endregion
 
-#region <Meet Info tab>
+#region <Meet Info tab> 
 meet_frame = ttk.Frame(nb, padding = formats.frame_padding)
 meet_frame.grid(column=0, row = 0, sticky = formats.frame_sticky)
 
 def confirm_entries_meet():
-    athlete_info = meet_name.get().lower()    
+    meet_info = meet_name.get().lower()    
     try:
         if meet_date.get():
-            entry_confirmation_meet.set(f"Submitted {athlete_info}'s \ninformation to the database")
+            entry_confirmation_meet.set(f"Submitted {meet_info}'s \ninformation to the database")
             enter_data_meet()
         else:
             entry_confirmation_meet.set(f"Please enter data")
@@ -587,6 +589,6 @@ nb.add(relay_frame, text = 'Relay Entry')
 nb.add(db_800_frame, text = '800m Database', state = 'hidden')
 nb.add(db_400_frame, text = '400m Database', state = 'hidden')
 
-nb.select(relay_frame)
+nb.select(laps_frame)
 
 root.mainloop()
