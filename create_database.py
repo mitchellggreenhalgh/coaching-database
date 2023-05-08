@@ -10,13 +10,6 @@ connection = running_db.cursor()
 
 
 # Setup DB structure
-# TODO Other Tables: Records (view of all races), 
-# race splits/details (table) --> TODO AXING THAT, gonna just convert the input from that into laps upon submitting data for insert,
-# race laps/details (table) 
-# relay table (overall time, participants, date)
-# Meet information (weather, date, name, locationetc.), mileage and other individual based metrics (like intensity and stuff)
-
-#TODO: change school_year_beginning to a season(xc/tf) and year var instead of school year var
 connection.execute('''
                    CREATE TABLE IF NOT EXISTS athletes (
                     athlete TEXT,
@@ -74,6 +67,7 @@ connection.execute('''
                     )
                    ''')
 
+#TODO: add relative humidity to meet info? meh, dont really feel like looking up all the info retroactively
 connection.execute('''
                     CREATE TABLE IF NOT EXISTS meet_information (
                         name TEXT,
@@ -104,7 +98,7 @@ connection.execute('''
                     )
                     ''')
 
-#TODO: add relative humidity to meet info? meh, dont really feel like looking up all the info retroactively
+
 
 # Commit Database
 try:

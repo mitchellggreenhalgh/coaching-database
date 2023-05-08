@@ -33,7 +33,6 @@ except:
     else:
         messagebox.showinfo(title = 'Database Updater', message = 'No backup created.')
 
-# TODO: drop down for meet names in database_operations?
 
 #region <Athlete Tab>
 athlete_frame = ttk.Frame(nb, padding = formats.frame_padding)
@@ -147,7 +146,9 @@ splits_date_entry = ttk.Entry(splits_frame, width = 10, textvariable = splits_da
 
 ttk.Label(splits_frame, text = 'Meet Name [aaa bbb]').grid(column = 3, row = 0, sticky = formats.label_sticky)
 splits_meet = StringVar()
-splits_meet_entry = ttk.Entry(splits_frame, width = 10, textvariable = splits_meet).grid(column = 3, row = 1, sticky = formats.entry_sticky)
+splits_meet_list = db_ops.retrieve_meets(db_name)
+splits_meet_dropdown = ttk.OptionMenu(splits_frame, splits_meet, splits_meet_list[0], *splits_meet_list)\
+    .grid(column = 3, row = 1, sticky = formats.entry_sticky)
 
 ttk.Label(splits_frame, text = 'Relay Split? (y/n) [1/0]').grid(column = 4, row = 0, sticky = formats.label_sticky)
 splits_relay = IntVar()
@@ -244,13 +245,15 @@ ttk.Label(laps_frame, text = 'Event Distance [#### meters]').grid(column = 1, ro
 laps_event = IntVar()
 laps_event_entry = ttk.Entry(laps_frame, width = 10, textvariable = laps_event).grid(column = 1, row = 1, sticky = formats.entry_sticky)
 
-ttk.Label(laps_frame, text = 'Date [yyyy-mm-dd]').grid(column = 2, row = 0, sticky = formats.label_sticky)
+ttk.Label(laps_frame, text = 'Date [yyyy-mm-dd]').grid(column = 2, row = 0, sticky = formats.label_sticky) 
 laps_date = StringVar()
 laps_date_entry = ttk.Entry(laps_frame, width = 10, textvariable = laps_date).grid(column = 2, row = 1, sticky = formats.entry_sticky)
 
 ttk.Label(laps_frame, text = 'Meet Name [aaa bbb]').grid(column = 3, row = 0, sticky = formats.label_sticky)
 laps_meet = StringVar()
-laps_meet_entry = ttk.Entry(laps_frame, width = 10, textvariable = laps_meet).grid(column = 3, row = 1, sticky = formats.entry_sticky)
+laps_meet_list = db_ops.retrieve_meets(db_name)
+laps_meet_dropdown = ttk.OptionMenu(laps_frame, laps_meet, laps_meet_list[0], *laps_meet_list)\
+    .grid(column = 3, row = 1, sticky = formats.entry_sticky)
 
 ttk.Label(laps_frame, text = 'Relay Split? (y/n) [1/0]').grid(column = 4, row = 0, sticky = formats.label_sticky)
 laps_relay = IntVar()

@@ -27,7 +27,7 @@ class split_converter:
         
         else:
             without_empty_strings = [i for i in raw_input if i != '']
-            last_split = [without_empty_strings[-1]]  # TODO: Extract this as the total time?
+            last_split = [without_empty_strings[-1]] 
             replacements = last_split * (8 - len(without_empty_strings))
             new_list = without_empty_strings + replacements
 
