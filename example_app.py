@@ -18,6 +18,7 @@ def test(*args):
     except ValueError:  # ignore incorrect entries, no error
         pass
 
+
 # Main GUI: Widget Configuration
 mainframe = ttk.Frame(root, padding = "3 3 12 12")  # padding: left, top, right, bottom
 mainframe.grid(column=0, row=0, sticky=(N, S, E, W))

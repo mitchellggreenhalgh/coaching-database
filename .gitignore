@@ -1,2 +1,4 @@
 backup_DBs/
 test_world.ipynb
+.ipynb_checkpoints/
+example_app.py
