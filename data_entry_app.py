@@ -546,16 +546,19 @@ def enter_data_relay():
 
 
 ttk.Label(relay_frame, text = 'Meet Name [aaa bbb]').grid(column = 0, row = 0, sticky = formats.label_sticky)
+relay_meet = StringVar()
+relay_meet_list = db_ops.retrieve_meets(db_name)
+relay_meet_dropdown = ttk.OptionMenu(relay_frame, relay_meet, relay_meet_list[0], *relay_meet_list)\
+    .grid(column = 0, row = 1, sticky = formats.entry_sticky)
+
 ttk.Label(relay_frame, text = 'Date [yyyy-mm-dd]').grid(column = 1, row = 0, sticky = formats.label_sticky)
 ttk.Label(relay_frame, text = 'Relay Event [4x800, dmr, ...]').grid(column = 2, row = 0, sticky = formats.label_sticky)
 ttk.Label(relay_frame, text = 'Time [m:ss.dd]').grid(column = 3, row = 0, sticky = formats.label_sticky)
 ttk.Label(relay_frame, text = 'Sex [m/f]').grid(column = 4, row = 0, sticky = formats.label_sticky)
-relay_meet = StringVar()
 relay_date = StringVar()
 relay_event = StringVar()
 relay_time = StringVar()
 relay_sex = StringVar()
-relay_meet_entry = ttk.Entry(relay_frame, textvariable = relay_meet).grid(column = 0, row = 1, sticky = formats.entry_sticky)
 relay_date_entry = ttk.Entry(relay_frame, textvariable = relay_date).grid(column = 1, row = 1, sticky = formats.entry_sticky)
 relay_event_entry = ttk.Entry(relay_frame, textvariable = relay_event).grid(column = 2, row = 1, sticky = formats.entry_sticky)
 relay_time_entry = ttk.Entry(relay_frame, textvariable = relay_time).grid(column = 3, row = 1, sticky = formats.entry_sticky)
