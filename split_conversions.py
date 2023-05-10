@@ -7,7 +7,8 @@ class split_converter:
         splits, total_time = split_converter.fix_empty_splits(splits)
         conversion = [split_converter.interpret_input(y) - split_converter.interpret_input(x) for x,y in zip(splits,splits[1:])]
         formatted_conversion = [str(x)[3:-4] if len(str(x)) > 7 else str(x)[3:] + '.00' for x in conversion]
-        appended_conversion = [str(split_converter.interpret_input(splits[0])).split(' ')[1][1:][3:-4]] + formatted_conversion
+        formatted_first = [splits[0]] 
+        appended_conversion = formatted_first + formatted_conversion
         replaced_zeroes = ['' if i == '0:00.00' else i for i in appended_conversion]
 
         return replaced_zeroes, total_time
@@ -22,13 +23,17 @@ class split_converter:
         ''' When not all 8 splits are taken (e.g. for an 800m), replace all the empty strings with useable splits that don't affect the lap calculations. Also extract the total time from the last split. '''
 
         if all(bool(i) for i in raw_input):
-            last_split = [raw_input[-1]]
+            if len(raw_input) == 1:
+                last_split = [raw_input]
+            else:
+                last_split = [raw_input[-1]]
+
             return raw_input, last_split
         
         else:
-            without_empty_strings = [i for i in raw_input if i != '']
+            without_empty_strings = [i for i in raw_input if i]
             last_split = [without_empty_strings[-1]] 
-            replacements = last_split * (8 - len(without_empty_strings))
+            replacements = last_split * (8 - len(without_empty_strings)) # TODO: replace last_split with [''], i do that later in split_to_lap()
             new_list = without_empty_strings + replacements
 
             return new_list, last_split
