@@ -5,6 +5,6 @@ class time_addition:
         seconds = sum([float(sec[2:]) for sec in str_list])
 
         minutes += int(seconds // 60)
-        remaining_seconds = seconds % 60
+        remaining_seconds = round(seconds % 60, 2)
 
-        return f'{minutes}:{remaining_seconds:02}'
+        return f"{minutes}:{int(str(remaining_seconds).split('.')[0]):02}.{int(str(remaining_seconds).split('.')[1])}"
