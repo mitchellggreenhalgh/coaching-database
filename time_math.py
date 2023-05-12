@@ -7,4 +7,6 @@ class time_addition:
         minutes += int(seconds // 60)
         remaining_seconds = round(seconds % 60, 2)
 
-        return f"{minutes}:{int(str(remaining_seconds).split('.')[0]):02}.{int(str(remaining_seconds).split('.')[1])}"
+        return f"{minutes}:{int(str(remaining_seconds).split('.')[0]):02}.{str(remaining_seconds).split('.')[1]}"
+    
+print(time_addition.add_time(['1:06.90', '1:01.12']))
