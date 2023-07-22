@@ -6,6 +6,7 @@ from backup_database import db_backupper
 from split_conversions import split_converter
 from time_math import time_addition
 from database_operations import db_ops
+from os import listdir
 # import sqlite3
 
 
@@ -19,6 +20,10 @@ nb.pack(fill='both', expand = 1)
 
 # Database Connection
 db_name = db_backupper().db_name
+if db_name not in listdir():
+    # run create database
+    pass
+
 
 # Backup Database
 create_backup = db_backupper()
@@ -97,7 +102,7 @@ for child in athlete_frame.winfo_children():
     child.grid_configure(padx = 5, pady = 5)
 #endregion
 
-#region <Splits Tab> 
+#region <Splits Tab>  
 splits_frame = ttk.Frame(nb, padding = formats.frame_padding)
 splits_frame.grid(column = 0, row = 0, sticky = formats.frame_sticky)
 
@@ -105,8 +110,8 @@ def confirm_entries_splits(*args):
     athlete_info = splits_athlete.get()
     
     try:
-        entry_confirmation_splits.set(f"Submitted {athlete_info}'s splits to the database.")
         enter_data_splits()
+        entry_confirmation_splits.set(f"Submitted {athlete_info}'s splits to the database.")
         
     except ValueError:
         pass
@@ -585,6 +590,13 @@ ttk.Button(relay_frame, text = 'Submit', command = confirm_entries_relay).grid(c
 for child in relay_frame.winfo_children():
     child.grid_configure(padx = 3, pady = 5)
 #endregion
+
+#region <Season Info>
+
+# TODO: competition season input widget
+
+#endregion
+
 
 # Add frames to notebook
 nb.add(athlete_frame, text = 'Athlete Info')

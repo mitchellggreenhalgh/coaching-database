@@ -16,10 +16,10 @@ class db_backupper:
         time_since_backup = [self.now - tmstmp for tmstmp in self.timestamps]
         if not any(time < self.backup_period for time in time_since_backup):
                 copyfile(self.db_name, self.db_backup_name)
-                messagebox.showinfo(title = 'Database Updater', message = 'New backup created')
+                messagebox.showinfo(title = 'Database Updater', message = 'New backup created.')
         else:
             raise Exception('Recent backup within last 30 days found.')
     
     def _backup_override(self):
          copyfile(self.db_name, self.db_backup_name)
-         messagebox.showinfo(title = 'Database Updater', message = 'New backup created')
+         messagebox.showinfo(title = 'Database Updater', message = 'New backup created.')

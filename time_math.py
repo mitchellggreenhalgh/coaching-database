@@ -8,5 +8,3 @@ class time_addition:
         remaining_seconds = round(seconds % 60, 2)
 
         return f"{minutes}:{int(str(remaining_seconds).split('.')[0]):02}.{str(remaining_seconds).split('.')[1]}"
-    
-print(time_addition.add_time(['1:06.90', '1:01.12']))
