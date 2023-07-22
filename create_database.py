@@ -82,6 +82,10 @@ class db_creator:
                            end_date DATE
                         )
                            ''')
+        # sport: xc, tf_indoor, tf_outdoor
+        # year: yyyy
+        # start_date: yyyy-mm-dd
+        # end_date: yyyy-mm-dd
 
         try:
             # Check if a database of the same name exists
