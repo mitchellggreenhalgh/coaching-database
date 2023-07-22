@@ -604,7 +604,7 @@ nb.add(meet_frame, text = 'Meet Info')
 nb.add(splits_frame, text = 'Race Splits')
 nb.add(laps_frame, text = 'Lap Splits')
 nb.add(relay_frame, text = 'Relay Entry')
-nb.add(db_800_frame, text = '800m Database', state = 'hidden')
+nb.add(db_800_frame, text = '800m Database', state = 'hidden')  # TODO: Move these to their own app
 nb.add(db_400_frame, text = '400m Database', state = 'hidden')
 
 nb.select(laps_frame)
