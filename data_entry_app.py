@@ -21,7 +21,7 @@ nb.pack(fill='both', expand = 1)
 # Database Connection
 db_name = db_backupper().db_name
 if db_name not in listdir():
-    # run create database
+    #TODO: run create database 
     pass
 
 
