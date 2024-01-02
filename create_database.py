@@ -55,7 +55,7 @@ class db_creator:
                             weather_clouds TEXT,
                             weather_precipitation TEXT,
                             weather_notes TEXT,
-                            PRIMARY KEY(name, date)
+                            PRIMARY KEY (name, date)
                     )
                     ''')
 
