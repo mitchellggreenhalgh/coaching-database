@@ -3,3 +3,6 @@ test_world.ipynb
 .ipynb_checkpoints/
 example_app.py
 runningDB_master.py
+data_entry_app_scraps.py
+executable.txt
+800m_query.sql
