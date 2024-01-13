@@ -1,2 +1,0 @@
-cmd:
-pyinstaller data_entry_app.py --onefile -w
