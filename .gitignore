@@ -6,3 +6,4 @@ runningDB_master.py
 data_entry_app_scraps.py
 executable.txt
 800m_query.sql
+db_800m_splits.csv
