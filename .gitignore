@@ -2,7 +2,8 @@ backup_DBs/
 test_world.ipynb
 .ipynb_checkpoints/
 example_app.py
-runningDB_master.py
+runningDB_master.db
+runningDB_master_2.db
 data_entry_app_scraps.py
 executable.txt
 800m_query.sql
